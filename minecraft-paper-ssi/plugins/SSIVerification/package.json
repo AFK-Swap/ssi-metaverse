@@ -1,0 +1,22 @@
+{
+  "name": "minecraft-ssi-verification",
+  "version": "1.0.0",
+  "description": "SSI verification integration for Minecraft Paper server",
+  "main": "minecraft-ssi-integration.js",
+  "scripts": {
+    "start": "node minecraft-ssi-integration.js",
+    "dev": "nodemon minecraft-ssi-integration.js",
+    "test": "node test-integration.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "qrcode": "^1.5.3",
+    "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "keywords": ["minecraft", "ssi", "verification", "blockchain", "identity"],
+  "author": "SSI_Metaverse",
+  "license": "MIT"
+}

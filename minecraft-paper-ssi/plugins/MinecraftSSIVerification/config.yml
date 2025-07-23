@@ -1,0 +1,34 @@
+# SSI Verification Plugin Configuration
+# Integrates with your existing ACA-Py setup
+
+# ACA-Py Configuration  
+acapy:
+  admin-url: "http://localhost:8021"
+  # Credential definition ID is no longer required for flexible verification
+  # Plugin accepts any credential containing required attributes
+
+# Verification Requirements
+verification:
+  proof-name: "Minecraft Server Identity Verification"
+  required-attributes:
+    - "department"
+  required-predicates:
+    age-over-18:
+      attribute: "age"
+      predicate-type: ">="
+      value: 18
+
+# QR Code Settings
+qrcode:
+  size: 300
+  web-server:
+    enabled: true
+    port: 8080
+    host: "localhost"
+
+# Settings
+settings:
+  verification-timeout: 300
+  verified-benefits:
+    broadcast-verification: true
+    chat-prefix: "&a[VERIFIED]&r "

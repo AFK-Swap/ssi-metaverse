@@ -1,0 +1,47 @@
+# SSI Verification Plugin Configuration
+# Integrates with your existing SSI tutorial setup
+
+# ACA-Py Agent Configuration  
+acapy:
+  # Your running ACA-Py admin URL
+  admin-url: "http://localhost:8021"
+  # Your credential definition ID from the working setup
+  credential-definition-id: "AbH2V5oKsrPXbzbKKrpU3f:3:CL:2872881:University-Certificate"
+  
+# Verification Requirements (matching your tutorial)
+verification:
+  proof-name: "Minecraft Server Identity Verification"
+  proof-version: "1.0"
+  # Required attributes (will be revealed)
+  required-attributes:
+    - "department" 
+  # Required predicates (zero-knowledge proofs)
+  required-predicates:
+    age-over-18:
+      attribute: "age"
+      predicate-type: ">="
+      value: 18
+
+# QR Code Configuration
+qrcode:
+  size: 300
+  format: "PNG"
+  # Web server for serving QR images
+  web-server:
+    enabled: true
+    port: 8080
+    host: "localhost"
+
+# Plugin Settings
+settings:
+  # How long to wait for proof response (seconds)
+  verification-timeout: 300
+  # Verified player benefits
+  verified-benefits:
+    broadcast-verification: true
+    chat-prefix: "&a[VERIFIED]&r "
+
+# Database
+database:
+  type: "sqlite"
+  file: "plugins/SSIVerification/verifications.db"

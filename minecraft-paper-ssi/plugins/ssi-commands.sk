@@ -1,0 +1,87 @@
+# SSI Verification Commands for Skript
+# Simple script to handle /verify and /ssiverify commands
+
+command /verify:
+    description: Verify your identity using SSI credentials
+    permission: ssi.verify
+    trigger:
+        set {_player} to player's name
+        set {_url} to "http://localhost:8080/verify-player"
+        
+        # Check if already verified
+        if {verified::%player%} is true:
+            send "&a✓ You are already verified!" to player
+            stop
+        
+        # Check if verification in progress
+        if {verifying::%player%} is true:
+            send "&yVerification already in progress..." to player
+            if {qr::%player%} is set:
+                send "&bQR Code: &9%{qr::%player%}%" to player
+            stop
+        
+        send "&6=== SSI Identity Verification ===" to player
+        send "&yStarting verification process..." to player
+        send "&7You will need an SSI wallet with valid credentials." to player
+        
+        set {verifying::%player%} to true
+        
+        # This would normally make HTTP request to integration server
+        # For now, simulate the process
+        wait 2 seconds
+        
+        set {_sessionId} to "minecraft-%{_player}%-%now%"
+        set {_qrUrl} to "http://localhost:8080/qr/%{_sessionId}%"
+        set {qr::%player%} to {_qrUrl}
+        
+        send "&a✓ QR code generated!" to player
+        send "&bScan this QR with your SSI wallet:" to player
+        send "&9&l%{_qrUrl}%" to player
+        send "&7Or visit the URL in your browser and scan with your phone" to player
+
+command /ssiverify [<text>]:
+    description: Check if a player is verified
+    permission: ssi.check
+    trigger:
+        set {_target} to arg-1 ? player's name
+        
+        send "&6=== Verification Status ===" to player
+        send "&fPlayer: &e%{_target}%" to player
+        
+        if {verified::%{_target}%} is true:
+            send "&fStatus: &a✓ VERIFIED" to player
+        else:
+            send "&fStatus: &c✗ NOT VERIFIED" to player
+            
+        if {verifying::%{_target}%} is true:
+            send "&fSession Status: &7in-progress" to player
+            if {qr::%{_target}%} is set:
+                send "&fQR Code: &b%{qr::%{_target}%}%" to player
+
+# Command to manually verify a player (for testing)
+command /ssiverify-set <text> <boolean>:
+    description: Manually set verification status (admin only)
+    permission: ssi.admin
+    trigger:
+        set {verified::%arg-1%} to arg-2
+        set {verifying::%arg-1%} to false
+        delete {qr::%arg-1%}
+        
+        if arg-2 is true:
+            send "&aPlayer %arg-1% has been marked as verified" to player
+            
+            # Apply benefits
+            execute console command "effect give %arg-1% minecraft:glowing 999999 0 true"
+            send "&a✓ You have been verified and received benefits!" to arg-1 parsed as player
+            broadcast "&6%arg-1% &ahas been verified with SSI credentials!"
+        else:
+            send "&cPlayer %arg-1% verification status removed" to player
+
+# Auto-apply benefits when players join
+on join:
+    if {verified::%player%} is true:
+        send "&aWelcome back! You are verified." to player
+        execute console command "effect give %player% minecraft:glowing 999999 0 true"
+    else:
+        wait 3 seconds
+        send "&yUse &6/verify &yto verify your identity with SSI credentials!" to player
